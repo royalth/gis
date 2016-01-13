@@ -2,7 +2,7 @@
 #define BG_HPP
 
 #include <iostream>
-#include <vector>
+#include <queue>
 #include <algorithm>
 using namespace std; 
 
@@ -16,10 +16,12 @@ class BipartialGraph {
 		
 		vector<int> edges[MAXV]; 	// graf: lista sąsiedztwa dla wierzhcołków z lewej strony
 									// są to wierzchołki połączone krawędziami
-		int matching[MAXV]; 
-									
+		int matching_l[MAXV], matching_r[MAXV], dist[MAXV]; 
+							
 		bool hopcroftKarp(int size);
-		bool hopcroftKarpForInterval(int first, int last); 
+		int hopcroftKarpForInterval(int first, int last); 
+		bool bfs(int first, int last);
+		bool dfs(int l, int first, int last);
 	public:
 		BipartialGraph(); 
 		void addEdge(int l, int r);  

@@ -2,7 +2,7 @@
 
 int main() {
 	GraphColoring g; 
-	
+
 	g.input(); 
 	g.findColoring(); 
 	g.output(); 

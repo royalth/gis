@@ -3,29 +3,107 @@
 vector< pair<int, int> > BipartialGraph::findMatchingOfSize(int size) {
 	vector< pair<int, int> > result; 
 	
-	if (!hopcroftKarp(size))
+	if (!hopcroftKarp(size)) {
 		return result; 
+	}
 	
 	for (int i = min_l; i <= max_l; ++i) {
 		if (!edges[i].empty())
-			result.push_back( make_pair(i, matching[i]) ); 
+			result.push_back( make_pair(i, matching_l[i]) ); 
 	}
 	return result; 
 }
 
 bool BipartialGraph::hopcroftKarp(int size) {
-	for (int i = min_r; i <= min_r-size; ++i) {
-		// TODO jakieś cleanowanie danych? matching co najmniej
-		
-		if (hopcroftKarpForInterval(i, i+size))
+	for (int i = min_r; i <= max_r-size+1; ++i) {		
+		if (hopcroftKarpForInterval(i, i+size-1) == size)
 			return true;
 	}
 	return false; 
 }
 
 
-bool BipartialGraph::hopcroftKarpForInterval(int first, int last) {
+int BipartialGraph::hopcroftKarpForInterval(int first, int last) {
+	for (int i = min_l; i <= max_l; ++i)
+		matching_l[i] = NIL; 				// dopasowania dla wierzchołków lewej strony
+	for (int i = first; i <= last; ++i) 
+		matching_r[i] = NIL; 				// dopasowania dla wierzchołków prawej strony
+	int result = 0; 						// rozmiar skojarzenia 
 	
+	while (bfs(first, last)) {	// póki znajdujemy ścieżkę powiększającą
+		for (int l = min_l; l <= max_l; ++l) {
+			if (!edges[l].empty() && matching_l[l] == NIL && dfs(l, first, last))	// jeśli l jest wolnym wierzchołkiem i ścieżka pow. z niego istnieje
+				result++; 	// każda ścieżka powiększająca zwiększa rozmiar skojarzenia o 1
+		}
+	}
+	
+	return result; 
+}
+
+bool BipartialGraph::bfs(int first, int last) {
+	queue<int> q; 		// kolejka bfs; będą w niej tylko wierzchołki lewej strony
+		
+	for (int l = min_l; l <= max_l; ++l) {
+		if (edges[l].empty())
+			continue; 
+		
+		if (matching_l[l] == NIL) {			// uzupełniamy kolejkę niedopasowanymi wierzchołkami lewej strony grafu
+			dist[l] = 0; 					
+			q.push(l); 
+		} else {
+			dist[l] = INF; 
+		}
+	}
+	
+	dist[NIL] = INF; 	// szukamy drogi do dummy wierzchołka NIL
+	
+	while (!q.empty()) {
+		int l = q.front(); 
+		q.pop(); 
+		
+		if (dist[l] < dist[NIL]) {
+			for (vector<int>::iterator it = edges[l].begin(); it != edges[l].end(); ++it) {		// iteracja po wierzchołkach do których dojdziemy z l
+				if (*it < first || *it > last)		// ograniczamy przedział wierzchołków prawej strony grafu
+					continue; 
+				
+				int l2 = matching_r[*it]; 			// krawędzi l -> r -> l2
+				if (dist[l2] == INF) {
+					dist[l2] = dist[l] + 1; 
+					q.push(l2); 
+				}
+			}
+		}
+		
+	}
+	
+	return dist[NIL] != INF; 	// czy udało się znaleźć ścieżkę powiększającą - ścieżkę do wierzchołka NIL
+}
+
+bool BipartialGraph::dfs(int l, int first, int last) {
+	if (l == NIL)
+		return true; 
+		
+	for (vector<int>::iterator it = edges[l].begin(); it != edges[l].end(); ++it) {
+		if (*it < first || *it > last)
+			continue; 
+		
+		int r = *it;	
+		int l2 = matching_r[r];				// krawędzi: l -> r -> l2 
+		
+		if (dist[l2] == dist[l] + 1) {		// jeśli w bfsie przeszliśmy l -> r -> l2 
+			
+			if (dfs(l2, first, last)) {		// jeśli istnieje ścieżka powiększająca z l2
+				matching_l[l] = r; 			// przypisujemy ten fragment ścieżki powiększającej do skojarzenia
+				matching_r[r] = l; 
+				return true; 
+			}
+		
+		}
+	}
+	
+	// nie ma ścieżki powiększającej z l
+	dist[l] = INF; 
+	return false; 
 }
 
 
