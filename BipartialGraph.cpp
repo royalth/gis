@@ -2,6 +2,14 @@
 
 vector< pair<int, int> > BipartialGraph::findMatchingOfSize(int size) {
 	vector< pair<int, int> > result; 
+
+	//cout << "size: " << size << " min_l: " << min_l << " max_l: " << max_l << " min_r: " << min_r << " max_r: " << max_r << endl; 
+	for (int i = min_l; i <= max_l; ++i) {
+		//cout << "edges[" << i << "]: "; 
+		//for(vector<int>::iterator it = edges[i].begin(); it != edges[i].end(); ++it) {
+			//cout << *it << " "; 
+		//}
+	}
 	
 	if (!hopcroftKarp(size)) {
 		return result; 

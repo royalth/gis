@@ -2,10 +2,18 @@
 #define GC_HPP
 
 #include "BipartialGraph.hpp"
+#include "Graph.hpp"
 
+
+/**
+ * Klasa zawierająca logikę oraz struktury potrzebne do znalezienia kolorowania w grafie. 
+ */
 class GraphColoring {
 	
 private: 
+	/**
+	 * Struktura pomocnicza, która przedstawia przedział liczbowy - możliwy przedział kolorów dla krawędzi danego wierzchołka. 
+	 */
 	struct Interval {
 		Interval() {
 			start = 1;
@@ -14,52 +22,21 @@ private:
 		int start, end; 
 	}; 
 	
-	class Graph {
-		private:
-			int edges[MAXV][MAXV]; 		// -1 - nie ma krawędzi; 0 - jest krawedz, bez przyporzadkowanego koloru; >0 - kolor krawędzi
-			int V; 
-		public:
-			Graph() { } 
-			Graph(int _V) : V(_V) {
-				for (int i = 0; i <= V; ++i) 
-					for (int j = 0; j <= V; ++j) 
-						colorEdge(i, j, -1); 
-			} 
-			void colorEdge(int v1, int v2, int c) {
-				edges[v1][v2] = c;
-				edges[v2][v1] = c; 
-			}
-			void addEdge(int v1, int v2) {
-				colorEdge(v1, v2, 0); 
-			}
-			int getEdgeColor(int v1, int v2) {
-				return edges[v1][v2]; 
-			}
-			int getEdgesNum(int v) {
-				int num = 0; 
-				for (int i = 1; i <= V; ++i)
-					if (edges[v][i] >= 0) 
-						num++; 
-				return num; 
-			}
-			bool edgeExists(int v1, int v2) {
-				return edges[v1][v2] > -1; 
-			}
-			bool edgeWithColorExists(int v, int c) {
-				for (int v2 = 1; v2 <= V; ++v2)
-					if (edges[v][v2] == c)
-						return true; 
-
-				return false; 
-			}
-	};
-
-	int V, E, N; 
+	/** Liczba wierzchołków. */
+	int V;
+	
+	/** Liczba krawędzi. */
+	int E; 
+	
+	/** Tablica przedziałów możliwych kolorów krawędzi dla każdego wierzchołka. */
 	Interval interval[MAXV];
+	
+	/** Flaga oznaczająca, czy zostało znalezione kolorowanie. */ 
 	bool coloringFound; 
-	Graph g; 
-
-
+	
+	/** Struktura zawierająca budowę grafu. */
+	Graph g;
+	
 	/**
 	 * Zwraca true, jeśli można wykluczyć ten graf - jest on grafem pełnym o nieparzystej liczbie wierzchołków
 	 * lub cyklem o nieparzystej liczbie wierzchołków. 
@@ -127,4 +104,4 @@ public:
 };
 
 
-#endif // GC_HPP
+#endif /** GC_HPP */
