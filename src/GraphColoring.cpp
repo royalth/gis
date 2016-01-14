@@ -9,11 +9,9 @@ void GraphColoring::findColoring() {
 }
 
 bool GraphColoring::canExclude() {
-	if (V % 2 == 0) 
-		return false; 
-	if (E == V*(V-1)/2)		// graf pełny
+	if (V % 2 == 1 && E == V*(V-1)/2)		// graf pełny o nieparzystej liczbie wierzchołków
 		return true; 
-	if (E == V)	{
+	if (V % 2 == 0 && E == V-1)	{ 			// cykl o parzystej liczbie wierzchołków (nieparzystej liczbie krawędzi)
 		for (int i = 1; i <= V; ++i) {
 			if (g.getEdgesNum(i) != 2)
 				return false; 
@@ -53,10 +51,10 @@ bool GraphColoring::heuristic() {
 
 
 bool GraphColoring::processVertex(int v) {
-	cout << endl << "processVertex v: " << v << endl; 
+//	cout << endl << "processVertex v: " << v << endl; 
 	
 	if (!limitInterval(v)) {
-		cout << "limit interval v: " << v << endl; 
+	//	cout << "limit interval v: " << v << endl; 
 		return false; 
 	}
 	
@@ -81,14 +79,14 @@ bool GraphColoring::processEdge(int v1, int v2, BipartialGraph *bg) {
 	}
 	
 	if (!limitInterval(v2))  {
-		cout << "limit interval w process edge, v1: " << v1 << ", v2: " << v2 << endl; 
+		//cout << "limit interval w process edge, v1: " << v1 << ", v2: " << v2 << endl; 
 		return false; 
 	}
 		
 	vector<int> possibleColors = getPossibleColors(v1, v2);
 	
 	if (possibleColors.empty()) { 
-		cout << "possibleColors empty" << endl; 
+		//cout << "possibleColors empty" << endl; 
 		return false; 
 	}
 		
@@ -106,12 +104,12 @@ bool GraphColoring::limitInterval(int v) {
 		if (c <= 0) 	// krawędź ma juz przypisany kolor
 			continue; 
 		
-		interval[v].start = max(interval[v].start, c - d + 1); 	// TODO zweryfikuj
+		interval[v].start = max(interval[v].start, c - d + 1); 	
 		interval[v].end = min(interval[v].end, c + d - 1); 
 	}
 	
-	if (interval[v].start > interval[v].end)	{ 	// TODO zweryfikuj 
-		cout << "v: " << v << ", d: " << d << ", int start: " << interval[v].start << ", int end: " << interval[v].end << endl; 
+	if (interval[v].start > interval[v].end)	{ 	
+		//cout << "v: " << v << ", d: " << d << ", int start: " << interval[v].start << ", int end: " << interval[v].end << endl; 
 		return false; 
 	}
 	return true; 
@@ -131,11 +129,11 @@ vector<int> GraphColoring::getPossibleColors(int v1, int v2) {
 }
 
 bool GraphColoring::chooseColoringForVertex(int v, BipartialGraph *bg) {
-	cout << "v: " << v << ", size: " << g.getEdgesNum(v) << endl; 
+	//cout << "v: " << v << ", size: " << g.getEdgesNum(v) << endl; 
 	
 	vector< pair<int, int> > coloring = bg->findMatchingOfSize( g.getEdgesNum(v) ); 
 	if (coloring.empty()) {
-		cout << "coloring empty" << endl; 
+		//cout << "coloring empty" << endl; 
 		return false; 
 	}
 	

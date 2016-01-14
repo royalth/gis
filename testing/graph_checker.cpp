@@ -1,9 +1,4 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
-using namespace std; 
-
-const int MAXV = 100000; 
+#include "../src/common.hpp"
 
 int N, maxv; 
 vector< pair<int, int> > edges[MAXV]; 
@@ -50,7 +45,7 @@ int main() {
 		correct = false; 
 	}
 	if (minc != 1) {
-		cout << "Najmniejszy kolor jest rozny od 1. " << endl; 
+		cout << "Najmniejszy kolor jest rozny od 1 - jest równy " << minc << endl; 
 		correct = false; 
 	}
 	

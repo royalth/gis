@@ -1,5 +1,12 @@
 all: 
-	g++ main.cpp GraphColoring.cpp BipartialGraph.cpp Graph.cpp -o gis
+	g++ src/main.cpp src/GraphColoring.cpp src/BipartialGraph.cpp src/Graph.cpp -o gis
 	
-bipartial_test: bipartial_graph_test.cpp BipartialGraph.hpp BipartialGraph.cpp 
-	g++ bipartial_graph_test.cpp BipartialGraph.cpp -o bipartial_test
+bipartial_test: testing/bipartial_graph_test.cpp src/BipartialGraph.hpp src/BipartialGraph.cpp 
+	g++ testing/bipartial_graph_test.cpp src/BipartialGraph.cpp -o bipartial_test
+	
+checker: testing/graph_checker.cpp
+	g++ testing/graph_checker.cpp -o graph_checker
+	
+test_gen: testing/graph_generator.cpp
+	g++ testing/graph_generator.cpp -o test_generator
+
